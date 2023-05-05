@@ -8,22 +8,17 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
----
-title: "Editing score functions"
-author: "Joe Brown"
-date: "2023-05-04"
-output: html_document
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
 
 # Proposed changes to score functions.
 
 Following first walks through the two scoring functions (`score_ramp` and `score_bayesian`) and explains the changes made and the shows examples of the output.
 
 Then, I show changes to `score_hruns` which has an added step of converting the input Hector data to a matrix of values (will be input for scoring function). I give a final example to show the functionality. 
+
+```{r}
+# loading Matilda
+library(matilda)
+```
 
 ### `score-ramp`
 
