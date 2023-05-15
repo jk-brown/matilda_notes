@@ -69,7 +69,7 @@ score_ramp <- function(m, w1, w2, na.omit = FALSE) {
   # ensure that w1 argument is a value of at least 0 - no negative
   if (w1 < 0) stop("w1 must be at least 0")
   
-  # ensure that w2 is at least as big as w1 - w2 should never ben less than w1
+  # ensure that w2 is at least as big as w1 - w2 should never be less than w1
   if (w2 < w1) stop("w2 must be at least as big as w1")
   
   # Initialize a matrix that will be occupied by model scores. The first column
