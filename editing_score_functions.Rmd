@@ -215,6 +215,10 @@ score_bayesian <- function(m, e = 2) {
   # initialize vector to store RMSE values from loop
   rmse_vector <- numeric() 
   
+  # Stop execution if number of columns in the matrix is less the 2
+  # indicates that there is only one model result stored in matrix
+  stopifnot(ncol(m) > 2)
+  
   # indicate that observed data are in first column of matrix
   obs_data <- m[, 1]
   
