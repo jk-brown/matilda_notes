@@ -44,7 +44,7 @@ Function returns a vector of scores for each model iteration.
 #' closer to 1 indicated skillful models, while scores closer to 0 indicate models
 #' that produce values that deviate further from observed data.
 #'
-#' @param matrix Matrix of values. The first column of the matrix should be 
+#' @param m Matrix of values. The first column of the matrix should be 
 #' a vector of observed data. Subsequent vectors are representative of modeled 
 #' values for a given variable.   
 #' @param w1 Difference at which score begins to ramp down from a 1. 
@@ -64,20 +64,20 @@ Function returns a vector of scores for each model iteration.
 #' # scoring columns where scores <= 5 will score 1 and scores >= 10 will score 0 
 #' score_ramp(mat, w1 = 5, w2 = 10)
 
-score_ramp <- function(matrix, w1, w2, na.omit = FALSE) {
+score_ramp <- function(m, w1, w2, na.omit = FALSE) {
   
   # Initialize a matrix that will be occupied by model scores. The first column
   # of the matrix must be the observed data and will be removed before returning
   # the final output.
-  scores_matrix <- matrix(NA_real_, nrow(matrix), ncol(matrix))
+  scores_matrix <- matrix(NA_real_, nrow(m), ncol(m))
   
   # loop across columns of the matrix. For each column (i) after col 2
-  for (i in 2:ncol(matrix)) {
+  for (i in 2:ncol(m)) {
     
     # indicate that observed data are in first column of matrix
-    obs_data <- matrix[, 1]
+    obs_data <- m[, 1]
     # indicate modeled data are in subsequent columns
-    model_data <- matrix[, i]
+    model_data <- m[, i]
     
     # omit rows that have NA values 
     if (na.omit) {
@@ -181,7 +181,7 @@ RMSE_calc <- function(x, y) {
 #' of errors. Likelihood values are used to compute posterior probabilities which
 #' are used as scores for each model iteration.
 #'
-#' @param matrix A Matrix of values. The first column of the matrix should be 
+#' @param m A Matrix of values. The first column of the matrix should be 
 #' a vector of observed data for a give variable. Subsequent vectors should be 
 #' representative of modeled values for a given variable.
 #' @param e A values for 0-Inf. This value controls the decay rate. It controls 
@@ -200,18 +200,18 @@ RMSE_calc <- function(x, y) {
 #' # scoring with a decay rate of 2               
 #' score_Bayesian(mat, e = 2)
 
-score_bayesian <- function(matrix, e = 2) {
+score_bayesian <- function(m, e = 2) {
   
   # initialize vector to store RMSE values from loop
   rmse_vector <- numeric() 
   
   # loop across columns of the matrix. For each column (i) after col 2
-  for(i in 2:ncol(matrix)) {
+  for(i in 2:ncol(m)) {
   
   # indicate that observed data are in first column of matrix
-  obs_data <- matrix[, 1]
+  obs_data <- m[, 1]
   # indicate modeled data are in subsequent columns
-  model_data <- matrix[, i]
+  model_data <- m[, i]
   
   # compute RMSE using obs_data and model_data
   rmse_vals = RMSE_calc(obs_data, model_data)
