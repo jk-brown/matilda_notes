@@ -66,34 +66,44 @@ Function returns a vector of scores for each model iteration.
 
 score_ramp <- function(m, w1, w2, na.omit = FALSE) {
   
+  # ensure that w1 argument is a value of at least 0 - no negative
+  if (w1 < 0) stop("w1 must be at least 0")
+  
+  # ensure that w2 is at least as big as w1 - w2 should never ben less than w1
+  if (w2 < w1) stop("w2 must be at least as big as w1")
+  
   # Initialize a matrix that will be occupied by model scores. The first column
   # of the matrix must be the observed data and will be removed before returning
   # the final output.
   scores_matrix <- matrix(NA_real_, nrow(m), ncol(m))
   
+  # Stop execution if number of columns in the matrix is less the 2
+  # indicates that there is only one model result stored in matrix
+  stopifnot(ncol(m) > 2)
+  
+  # indicate that observed data are in first column of matrix
+  obs_data <- m[, 1]
+  
+  # throw and error if the modeled data is all NAs  
+  if (all(is.na(obs_data))) stop("No non-NA values in x")
+
+  
   # loop across columns of the matrix. For each column (i) after col 2
   for (i in 2:ncol(m)) {
-    
-    # indicate that observed data are in first column of matrix
-    obs_data <- m[, 1]
+
     # indicate modeled data are in subsequent columns
     model_data <- m[, i]
     
-    # omit rows that have NA values 
-    if (na.omit) {
-      obs_data <- na.omit(obs_data)
-      model_data <- na.omit(model_data)
-    }
-    
-    if (w1 < 0) stop("w1 must be at least 0")
-    
-    if (w2 < w1) stop("w2 must be at least as big as w1")
-    
+    # checks to ensure equal lengths between modeled and observed data 
     if (length(obs_data) != length(model_data)) stop("Length of x must be equal to length of y")
     
-    if ( all(is.na(obs_data))) stop("No non-NA values in x")
+    # throw and error if the modeled data is all NAs  
+    if (all(is.na(model_data))) stop("No non-NA values in y")
     
-    if ( all(is.na(model_data))) stop("No non-NA values in y")
+    # omit rows that have NA values in both obs_data and model_data
+    if (na.omit) {
+      obs_data <- na.omit(obs_data)
+      model_data <- na.omit(model_data)}
     
     # Take absolute difference between obs_data and model_data value
     abs_diffs <- abs(obs_data - model_data)
@@ -205,11 +215,12 @@ score_bayesian <- function(m, e = 2) {
   # initialize vector to store RMSE values from loop
   rmse_vector <- numeric() 
   
+  # indicate that observed data are in first column of matrix
+  obs_data <- m[, 1]
+  
   # loop across columns of the matrix. For each column (i) after col 2
   for(i in 2:ncol(m)) {
   
-  # indicate that observed data are in first column of matrix
-  obs_data <- m[, 1]
   # indicate modeled data are in subsequent columns
   model_data <- m[, i]
   
